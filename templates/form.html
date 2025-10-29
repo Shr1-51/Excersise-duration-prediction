@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Exercise Duration Predictor</title>
+    <style>
+        /* ... (styling unchanged, copy as needed) ... */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 420px;
+            width: 100%;
+        }
+        h1 { text-align: center; color: #333; margin-bottom: 1.5rem; }
+        form { display: flex; flex-direction: column; gap: 1.2rem; }
+        label { font-weight: 600; color: #555; margin-bottom: 0.25rem; display: block; }
+        input[type="text"], input[type="number"], select {
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border: 1.8px solid #ccc;
+            border-radius: 6px;
+            transition: border-color 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6; /* blue border */
+            box-shadow: 0 0 5px rgba(59,130,246,0.5);
+        }
+        button {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            font-size: 1.1rem;
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover { background-color: #2563eb; }
+        .result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e0f2fe;
+            border-radius: 8px;
+            color: #0369a1;
+            font-size: 1.2rem;
+            text-align: center;
+            display: block;
+        }
+        .error {
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-top: -0.75rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Exercise Duration Predictor</h1>
+        <form method="post">
+            <div>
+                <label for="mode">Mode:</label>
+                <select name="mode" id="mode" onchange="toggleFields()" required>
+                    <option value="walking" {% if mode == 'walking' %}selected{% endif %}>Walking</option>
+                    <option value="running" {% if mode == 'running' %}selected{% endif %}>Running</option>
+                    <option value="custom" {% if mode == 'custom' %}selected{% endif %}>Custom</option>
+                </select>
+            </div>
+            <div>
+                <label for="gender">Gender:</label>
+                <select name="gender" id="gender" required>
+                    <option value="male" {% if gender == 'male' %}selected{% endif %}>Male</option>
+                    <option value="female" {% if gender == 'female' %}selected{% endif %}>Female</option>
+                </select>
+            </div>
+            <div>
+                <label for="age">Age:</label>
+                <input type="number" name="age" id="age" required value="{{ age }}">
+            </div>
+            <div>
+                <label for="height">Height:</label>
+                <input type="number" name="height" id="height" required value="{{ height }}">
+            </div>
+            <div>
+                <label for="weight">Weight:</label>
+                <input type="number" name="weight" id="weight" required value="{{ weight }}">
+            </div>
+            <div>
+                <label for="calories">Calories:</label>
+                <input type="number" name="calories" id="calories" required value="{{ calories }}">
+            </div>
+            <div id="custom-fields" style="display:none;">
+                <div>
+                    <label for="heart_rate">Heart Rate:</label>
+                    <input type="number" name="heart_rate" id="heart_rate" value="{{ heart_rate }}">
+                </div>
+                <div>
+                    <label for="body_temp">Body Temp:</label>
+                    <input type="number" name="body_temp" id="body_temp" value="{{ body_temp }}">
+                </div>
+            </div>
+            <button type="submit">Predict Duration</button>
+        </form>
+        {% if prediction %}
+            <div class="result" id="result" style="display:block;">
+                {{ prediction }}
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        function toggleFields() {
+            var mode = document.getElementById('mode').value;
+            var customFields = document.getElementById('custom-fields');
+            customFields.style.display = (mode === 'custom') ? 'block' : 'none';
+        }
+        // Initial call to set the correct field visibility on load
+        window.onload = toggleFields;
+    </script>
+</body>
+</html>
